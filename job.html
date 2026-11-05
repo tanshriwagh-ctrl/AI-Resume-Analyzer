@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI Resume Analyzer - Job Requirements</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f5f7fb;
+            color: #222;
+        }
+
+        /* ================= NAVBAR ================= */
+
+        nav {
+            height: 70px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 70px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #4f46e5;
+        }
+
+        .logo span {
+            color: #222;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #333;
+            font-size: 15px;
+        }
+
+        nav a:hover {
+            color: #4f46e5;
+        }
+
+        .logout-btn {
+            color: #dc2626 !important;
+        }
+
+        /* ================= MAIN ================= */
+
+        .container {
+            max-width: 900px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 10px;
+            color: #1e1b4b;
+            font-size: 36px;
+        }
+
+        .page-subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 35px;
+        }
+
+        /* ================= FORM CARD ================= */
+
+        .job-card {
+            background: white;
+            padding: 35px;
+            border-radius: 18px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            color: #1e1b4b;
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 13px 15px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: #4f46e5;
+        }
+
+        .form-group textarea {
+            min-height: 130px;
+            resize: vertical;
+        }
+
+        .hint {
+            font-size: 13px;
+            color: #777;
+            margin-top: 8px;
+        }
+
+        /* ================= SKILLS ================= */
+
+        .skills-input-area {
+            display: flex;
+            gap: 10px;
+        }
+
+        .skills-input-area input {
+            flex: 1;
+        }
+
+        .add-btn {
+            background: #4f46e5;
+            color: white;
+            border: none;
+            padding: 0 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .add-btn:hover {
+            background: #3730a3;
+        }
+
+        .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .skill-tag {
+            background: #eef2ff;
+            color: #3730a3;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .remove-skill {
+            border: none;
+            background: transparent;
+            color: #dc2626;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            padding: 0;
+        }
+
+        .remove-skill:hover {
+            color: #991b1b;
+        }
+
+        /* ================= BUTTON ================= */
+
+        .submit-area {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .continue-btn {
+            background: #16a34a;
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .continue-btn:hover {
+            background: #15803d;
+        }
+
+        /* ================= MESSAGE ================= */
+
+        #message {
+            text-align: center;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        .error {
+            color: #dc2626;
+        }
+
+        .success {
+            color: #16a34a;
+        }
+
+        /* ================= FOOTER ================= */
+
+        footer {
+            background: #1e1b4b;
+            color: white;
+            text-align: center;
+            padding: 25px;
+            margin-top: 70px;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 600px) {
+
+            nav {
+                padding: 0 20px;
+            }
+
+            nav ul {
+                display: none;
+            }
+
+            .page-title {
+                font-size: 28px;
+            }
+
+            .job-card {
+                padding: 25px 20px;
+            }
+
+            .skills-input-area {
+                flex-direction: column;
+            }
+
+            .add-btn {
+                padding: 12px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ================= NAVBAR ================= -->
+
+<nav>
+
+    <div class="logo">
+        AI <span>Resume Analyzer</span>
+    </div>
+
+    <ul>
+
+        <li>
+            <a href="home.html">
+                Home
+            </a>
+        </li>
+
+        <li>
+            <a href="job.html">
+                Job
+            </a>
+        </li>
+
+        <li>
+            <a href="analysis.html">
+                Analysis
+            </a>
+        </li>
+
+        <li>
+            <a href="logout.html" class="logout-btn">
+                Logout
+            </a>
+        </li>
+
+    </ul>
+
+</nav>
+
+
+<!-- ================= MAIN ================= -->
+
+<div class="container">
+
+    <h1 class="page-title">
+        Job Requirements
+    </h1>
+
+    <p class="page-subtitle">
+        Enter the job details to compare candidate resumes
+        with the required qualifications.
+    </p>
+
+
+    <div class="job-card">
+
+
+        <!-- ================= JOB TITLE ================= -->
+
+        <div class="form-group">
+
+            <label for="jobTitle">
+                Job Title
+            </label>
+
+            <input
+                type="text"
+                id="jobTitle"
+                placeholder="Example: Software Developer"
+            >
+
+        </div>
+
+
+        <!-- ================= COMPANY ================= -->
+
+
+        <!-- ================= REQUIRED SKILLS ================= -->
+
+        <div class="form-group">
+
+            <label>
+                Required Skills
+            </label>
+
+
+            <div class="skills-input-area">
+
+                <input
+                    type="text"
+                    id="skillInput"
+                    placeholder="Enter required skill"
+                >
+
+
+                <button
+                    type="button"
+                    class="add-btn"
+                    id="addSkillBtn"
+                >
+                    + Add
+                </button>
+
+            </div>
+
+
+            <p class="hint">
+                Add all important skills required for this job.
+            </p>
+
+
+            <!-- ADDED SKILLS -->
+
+            <div
+                class="skills-list"
+                id="skillsList"
+            ></div>
+
+        </div>
+
+
+        <!-- ================= JOB DESCRIPTION ================= -->
+
+        <div class="form-group">
+
+            <label for="jobDescription">
+                Job Description
+            </label>
+
+            <textarea
+                id="jobDescription"
+                placeholder="Enter the job description, responsibilities and requirements..."
+            ></textarea>
+
+        </div>
+
+
+        <!-- ================= CONTINUE ================= -->
+
+        <div class="submit-area">
+
+            <button
+                type="button"
+                class="continue-btn"
+                onclick="saveJob()"
+            >
+                Continue to Upload Resumes →
+            </button>
+
+        </div>
+
+
+        <p id="message"></p>
+
+
+    </div>
+
+</div>
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer>
+
+    © 2026 AI Resume Analyzer | All Rights Reserved
+
+</footer>
+
+
+<!-- ================= JAVASCRIPT ================= -->
+
+<script>
+
+
+/* =========================================================
+   REQUIRED SKILLS ARRAY
+   ========================================================= */
+
+let requiredSkills = [];
+
+
+/* =========================================================
+   GET HTML ELEMENTS
+   ========================================================= */
+
+const skillInput =
+    document.getElementById("skillInput");
+
+const addSkillBtn =
+    document.getElementById("addSkillBtn");
+
+const skillsList =
+    document.getElementById("skillsList");
+
+const message =
+    document.getElementById("message");
+
+
+/* =========================================================
+   ADD SKILL
+   ========================================================= */
+
+addSkillBtn.addEventListener(
+    "click",
+    addSkill
+);
+
+
+/* =========================================================
+   ALSO ADD SKILL WHEN ENTER IS PRESSED
+   ========================================================= */
+
+skillInput.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (event.key === "Enter") {
+
+            event.preventDefault();
+
+            addSkill();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   ADD SKILL FUNCTION
+   ========================================================= */
+
+function addSkill() {
+
+    const skill =
+        skillInput.value.trim();
+
+
+    /* Empty skill */
+
+    if (skill === "") {
+
+        alert(
+            "Please enter a skill."
+        );
+
+        skillInput.focus();
+
+        return;
+
+    }
+
+
+    /* Prevent duplicate skill */
+
+    const alreadyExists =
+        requiredSkills.some(
+            function(existingSkill) {
+
+                return existingSkill.toLowerCase()
+                    === skill.toLowerCase();
+
+            }
+        );
+
+
+    if (alreadyExists) {
+
+        alert(
+            "This skill has already been added."
+        );
+
+        skillInput.value = "";
+
+        skillInput.focus();
+
+        return;
+
+    }
+
+
+    /* Add skill to array */
+
+    requiredSkills.push(skill);
+
+
+    /* Display skill */
+
+    displaySkills();
+
+
+    /* Clear input */
+
+    skillInput.value = "";
+
+    skillInput.focus();
+
+}
+
+
+/* =========================================================
+   DISPLAY SKILLS
+   ========================================================= */
+
+function displaySkills() {
+
+    skillsList.innerHTML = "";
+
+
+    requiredSkills.forEach(
+        function(skill, index) {
+
+            const skillTag =
+                document.createElement("div");
+
+            skillTag.className =
+                "skill-tag";
+
+
+            skillTag.innerHTML = `
+
+                <span>
+                    ${escapeHTML(skill)}
+                </span>
+
+                <button
+                    type="button"
+                    class="remove-skill"
+                    onclick="removeSkill(${index})"
+                    title="Remove skill"
+                >
+                    ×
+                </button>
+
+            `;
+
+
+            skillsList.appendChild(
+                skillTag
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   REMOVE SKILL
+   ========================================================= */
+
+function removeSkill(index) {
+
+    requiredSkills.splice(
+        index,
+        1
+    );
+
+
+    displaySkills();
+
+}
+
+
+/* =========================================================
+   ESCAPE HTML
+   ========================================================= */
+
+function escapeHTML(text) {
+
+    const div =
+        document.createElement("div");
+
+    div.textContent = text;
+
+    return div.innerHTML;
+
+}
+
+
+/* =========================================================
+   SAVE JOB DETAILS
+   ========================================================= */
+
+async function saveJob() {
+
+    const jobTitle = document.getElementById("jobTitle").value.trim();
+    const jobDescription = document.getElementById("jobDescription").value.trim();
+    const userId = Number(localStorage.getItem("user_id") || 0);
+
+    if (jobTitle === "") {
+        showError("Please enter the Job Title.");
+        document.getElementById("jobTitle").focus();
+        return;
+    }
+
+    if (requiredSkills.length === 0) {
+        showError("Please add at least one required skill.");
+        skillInput.focus();
+        return;
+    }
+
+    if (jobDescription === "") {
+        showError("Please enter the Job Description.");
+        document.getElementById("jobDescription").focus();
+        return;
+    }
+
+    if (!userId) {
+        showError("Please login first.");
+        return;
+    }
+
+    const BACKEND_URL = "http://127.0.0.1:5000";
+
+    message.innerText = "Saving job requirements...";
+    message.className = "success";
+
+    try {
+        const response = await fetch(BACKEND_URL + "/jobs", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                user_id: userId,
+                job_title: jobTitle,
+                required_skills: requiredSkills,
+                job_description: jobDescription
+            })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || data.status !== "success") {
+            throw new Error(data.message || "Could not save job requirements.");
+        }
+
+        // Save the EXACT job created by the backend.
+        localStorage.setItem("currentJobId", String(data.job.job_id));
+
+        const jobData = {
+            jobTitle: jobTitle,
+            requiredSkills: requiredSkills,
+            jobDescription: jobDescription,
+            jobId: data.job.job_id,
+            createdAt: new Date().toISOString()
+        };
+
+        localStorage.setItem("jobRequirements", JSON.stringify(jobData));
+        localStorage.setItem("jobTitle", jobTitle);
+        localStorage.setItem("requiredSkills", JSON.stringify(requiredSkills));
+        localStorage.setItem("jobDescription", jobDescription);
+
+        message.innerText = "✅ Job requirements saved successfully.";
+        message.className = "success";
+
+        setTimeout(function() {
+            window.location.href = "home.html";
+        }, 700);
+
+    } catch (error) {
+        console.error("Save job error:", error);
+        showError(error.message || "Unable to connect to backend.");
+    }
+}
+
+
+function showError(text) {
+
+    message.innerText =
+        "❌ " + text;
+
+    message.className =
+        "error";
+
+}
+
+
+</script>
+
+
+</body>
+
+</html>

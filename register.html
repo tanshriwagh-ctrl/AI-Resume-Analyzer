@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Register - AI Resume Tool</title>
+
+  <style>
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 320px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    button:disabled {
+      background: #999;
+      cursor: not-allowed;
+    }
+
+    .login-link {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+
+    .login-link a {
+      color: #007bff;
+      text-decoration: none;
+    }
+
+    #message {
+      text-align: center;
+      margin-top: 12px;
+      font-size: 14px;
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+
+  <div class="container">
+
+    <h2>Register</h2>
+
+
+    <form id="register-form">
+
+      <input
+        type="text"
+        id="fullName"
+        placeholder="Full Name"
+        required
+      >
+
+      <input
+        type="email"
+        id="email"
+        placeholder="Email"
+        required
+      >
+
+      <input
+        type="password"
+        id="password"
+        placeholder="Password"
+        required
+      >
+
+      <button type="submit" id="registerBtn">
+        Register
+      </button>
+
+    </form>
+
+
+    <div id="message"></div>
+
+
+    <div class="login-link">
+
+      Already have an account?
+      <a href="login.html">Login</a>
+
+    </div>
+
+  </div>
+
+
+  <script>
+
+    document
+      .getElementById("register-form")
+      .addEventListener("submit", async function(event) {
+
+        event.preventDefault();
+
+
+       
+
+        const fullName =
+          document.getElementById("fullName").value.trim();
+
+        const email =
+          document.getElementById("email").value.trim();
+
+        const password =
+          document.getElementById("password").value;
+
+
+        const message =
+          document.getElementById("message");
+
+        const registerBtn =
+          document.getElementById("registerBtn");
+
+
+       
+
+        registerBtn.disabled = true;
+        registerBtn.innerText = "Registering...";
+
+
+        try {
+
+          
+
+          const response = await fetch(
+            "http://127.0.0.1:5000/register",
+            {
+              method: "POST",
+
+              headers: {
+                "Content-Type": "application/json"
+              },
+
+              body: JSON.stringify({
+
+                name: fullName,
+                email: email,
+                password: password
+
+              })
+            }
+          );
+
+
+          const data = await response.json();
+
+
+         
+
+          if (response.ok) {
+
+    alert("Registration successful!");
+
+    message.innerText =
+      "Registration successful!";
+
+    message.style.color = "green";
+
+    setTimeout(function() {
+
+      window.location.href = "login.html";
+
+    }, 1000);
+
+}
+
+          else {
+
+            message.innerText =
+              data.message || "Registration failed.";
+
+            message.style.color = "red";
+
+            registerBtn.disabled = false;
+            registerBtn.innerText = "Register";
+
+          }
+
+
+        }
+
+        catch (error) {
+
+          console.error(error);
+
+          message.innerText =
+            "Cannot connect to backend. Make sure Flask server is running.";
+
+          message.style.color = "red";
+
+          registerBtn.disabled = false;
+          registerBtn.innerText = "Register";
+
+        }
+
+      });
+
+  </script>
+
+
+</body>
+
+</html>

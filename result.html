@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Resume Analysis Results</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background: #f5f7fb;
+            color: #222;
+        }
+
+        /* ================= HEADER ================= */
+
+        header {
+            background: #123a8c;
+            color: white;
+            padding: 22px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            font-size: 27px;
+        }
+
+        .home-btn {
+            background: white;
+            color: #123a8c;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 7px;
+            font-weight: bold;
+        }
+
+        .home-btn:hover {
+            background: #e9eefc;
+        }
+
+        /* ================= MAIN ================= */
+
+        .container {
+            width: 90%;
+            max-width: 1100px;
+            margin: 45px auto;
+        }
+
+        .title-section {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .title-section h2 {
+            color: #123a8c;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .title-section p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        /* ================= SCORE ================= */
+
+        .score-card {
+            background: linear-gradient(135deg, #1261d8, #0645b8);
+            color: white;
+            border-radius: 15px;
+            padding: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 18px rgba(0, 0, 0, 0.15);
+        }
+
+        .score-info h3 {
+            font-size: 27px;
+            margin-bottom: 10px;
+        }
+
+        .score-info p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .score-circle {
+            width: 145px;
+            height: 145px;
+            border-radius: 50%;
+            background: white;
+            color: #1261d8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            border: 8px solid #7eb2ff;
+        }
+
+        .score-circle strong {
+            font-size: 38px;
+        }
+
+        .score-circle span {
+            font-size: 14px;
+        }
+
+        /* ================= CARDS ================= */
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 28px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .card h3 {
+            color: #123a8c;
+            margin-bottom: 20px;
+            font-size: 21px;
+        }
+
+        /* ================= CANDIDATE ================= */
+
+        .candidate-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .info-box {
+            background: #f1f6ff;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .info-box span {
+            display: block;
+            color: #777;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+
+        .info-box strong {
+            color: #222;
+            font-size: 15px;
+        }
+
+        /* ================= SKILLS ================= */
+
+        .skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .skill {
+            background: #e5efff;
+            color: #1254b8;
+            padding: 9px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        /* ================= LIST ================= */
+
+        .list {
+            list-style: none;
+        }
+
+        .list li {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            line-height: 1.5;
+        }
+
+        .list li:last-child {
+            border-bottom: none;
+        }
+
+        .check {
+            color: #1261d8;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .warning {
+            color: #e08a00;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        /* ================= PROGRESS ================= */
+
+        .progress-item {
+            margin-bottom: 20px;
+        }
+
+        .progress-title {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 7px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: #e5e5e5;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #1769e0;
+            border-radius: 10px;
+        }
+
+        /* ================= SUGGESTIONS ================= */
+
+        .suggestions {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 35px;
+        }
+
+        .suggestions h3 {
+            color: #123a8c;
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+
+        .suggestion {
+            display: flex;
+            gap: 15px;
+            padding: 15px;
+            margin-bottom: 12px;
+            background: #f4f8ff;
+            border-left: 4px solid #1769e0;
+            border-radius: 5px;
+        }
+
+        .suggestion-number {
+            background: #1769e0;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        /* ================= BUTTON ================= */
+
+        .button-section {
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .analyze-again {
+            display: inline-block;
+            background: #1769e0;
+            color: white;
+            padding: 14px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            margin: 5px;
+        }
+
+        .analyze-again:hover {
+            background: #0e50b4;
+        }
+
+        .print-btn {
+            border: none;
+            background: #123a8c;
+            color: white;
+            padding: 14px 30px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 15px;
+        }
+
+        .print-btn:hover {
+            background: #092c70;
+        }
+
+        /* ================= FOOTER ================= */
+
+        footer {
+            background: #101f55;
+            color: white;
+            text-align: center;
+            padding: 25px;
+            margin-top: 50px;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 750px) {
+
+            header {
+                padding: 18px 20px;
+            }
+
+            header h1 {
+                font-size: 21px;
+            }
+
+            .container {
+                width: 94%;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .score-card {
+                flex-direction: column;
+                text-align: center;
+                gap: 25px;
+            }
+
+            .candidate-info {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+        /* ================= PRINT ================= */
+
+        @media print {
+
+            header,
+            footer,
+            .button-section {
+                display: none;
+            }
+
+            body {
+                background: white;
+            }
+
+            .card,
+            .suggestions,
+            .score-card {
+                box-shadow: none;
+            }
+
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+<!-- ================= HEADER ================= -->
+
+<header>
+
+    <h1>AI Resume Analyzer</h1>
+
+    <a href="home1.html" class="home-btn">
+        Home
+    </a>
+
+</header>
+
+
+<!-- ================= MAIN CONTENT ================= -->
+
+<div class="container">
+
+
+    <!-- TITLE -->
+
+    <div class="title-section">
+
+        <h2>Resume Analysis Result</h2>
+
+        <p>
+            AI-powered analysis of your resume
+        </p>
+
+    </div>
+
+
+    <!-- ================= SCORE ================= -->
+
+    <div class="score-card">
+
+        <div class="score-info">
+
+            <h3>Overall Resume Score</h3>
+
+            <p>
+                Your resume has been analyzed based on
+                skills, experience, education, formatting
+                and overall content quality.
+            </p>
+
+        </div>
+
+
+        <div class="score-circle">
+
+            <strong>85</strong>
+
+            <span>out of 100</span>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ================= CANDIDATE + SKILLS ================= -->
+
+    <div class="grid">
+
+
+        <!-- Candidate Information -->
+
+        <div class="card">
+
+            <h3>Candidate Information</h3>
+
+            <div class="candidate-info">
+
+                <div class="info-box">
+
+                    <span>Name</span>
+
+                    <strong id="candidateName">
+                        Candidate
+                    </strong>
+
+                </div>
+
+                <div class="info-box">
+
+                    <span>Experience</span>
+
+                    <strong>2+ Years</strong>
+
+                </div>
+
+                <div class="info-box">
+
+                    <span>Education</span>
+
+                    <strong>Bachelor's Degree</strong>
+
+                </div>
+
+                <div class="info-box">
+
+                    <span>Resume File</span>
+
+                    <strong id="resumeFileName">
+                        Resume.pdf
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Skills -->
+
+        <div class="card">
+
+            <h3>Skills Detected</h3>
+
+            <div class="skills">
+
+                <span class="skill">HTML</span>
+
+                <span class="skill">CSS</span>
+
+                <span class="skill">JavaScript</span>
+
+                <span class="skill">Python</span>
+
+                <span class="skill">SQL</span>
+
+                <span class="skill">Git</span>
+
+                <span class="skill">Communication</span>
+
+                <span class="skill">Problem Solving</span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ================= STRENGTHS + IMPROVEMENTS ================= -->
+
+    <div class="grid">
+
+
+        <!-- Strengths -->
+
+        <div class="card">
+
+            <h3>Resume Strengths</h3>
+
+            <ul class="list">
+
+                <li>
+                    <span class="check">✓</span>
+                    Good technical skill coverage
+                </li>
+
+                <li>
+                    <span class="check">✓</span>
+                    Clear education information
+                </li>
+
+                <li>
+                    <span class="check">✓</span>
+                    Relevant project experience
+                </li>
+
+                <li>
+                    <span class="check">✓</span>
+                    Easy-to-read resume structure
+                </li>
+
+                <li>
+                    <span class="check">✓</span>
+                    Good use of professional keywords
+                </li>
+
+            </ul>
+
+        </div>
+
+
+        <!-- Areas to Improve -->
+
+        <div class="card">
+
+            <h3>Areas to Improve</h3>
+
+            <ul class="list">
+
+                <li>
+                    <span class="warning">!</span>
+                    Add measurable achievements
+                </li>
+
+                <li>
+                    <span class="warning">!</span>
+                    Improve project descriptions
+                </li>
+
+                <li>
+                    <span class="warning">!</span>
+                    Add relevant certifications
+                </li>
+
+                <li>
+                    <span class="warning">!</span>
+                    Include more job-specific keywords
+                </li>
+
+                <li>
+                    <span class="warning">!</span>
+                    Improve the professional summary
+                </li>
+
+            </ul>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ================= SCORE BREAKDOWN ================= -->
+
+    <div class="card" style="margin-bottom: 30px;">
+
+        <h3>Resume Score Breakdown</h3>
+
+
+        <div class="progress-item">
+
+            <div class="progress-title">
+
+                <span>Skills</span>
+
+                <span>90%</span>
+
+            </div>
+
+            <div class="progress-bar">
+
+                <div class="progress-fill"
+                     style="width: 90%;">
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="progress-item">
+
+            <div class="progress-title">
+
+                <span>Experience</span>
+
+                <span>82%</span>
+
+            </div>
+
+            <div class="progress-bar">
+
+                <div class="progress-fill"
+                     style="width: 82%;">
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="progress-item">
+
+            <div class="progress-title">
+
+                <span>Education</span>
+
+                <span>88%</span>
+
+            </div>
+
+            <div class="progress-bar">
+
+                <div class="progress-fill"
+                     style="width: 88%;">
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="progress-item">
+
+            <div class="progress-title">
+
+                <span>Formatting</span>
+
+                <span>80%</span>
+
+            </div>
+
+            <div class="progress-bar">
+
+                <div class="progress-fill"
+                     style="width: 80%;">
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="progress-item">
+
+            <div class="progress-title">
+
+                <span>Keywords</span>
+
+                <span>85%</span>
+
+            </div>
+
+            <div class="progress-bar">
+
+                <div class="progress-fill"
+                     style="width: 85%;">
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ================= SUGGESTIONS ================= -->
+
+    <div class="suggestions">
+
+        <h3>AI Recommendations</h3>
+
+
+        <div class="suggestion">
+
+            <div class="suggestion-number">
+                1
+            </div>
+
+            <div>
+                <strong>Improve your professional summary</strong>
+
+                <p>
+                    Add a short summary highlighting your
+                    strongest skills, experience and career
+                    goals.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="suggestion">
+
+            <div class="suggestion-number">
+                2
+            </div>
+
+            <div>
+
+                <strong>Add measurable achievements</strong>
+
+                <p>
+                    Instead of only describing responsibilities,
+                    include measurable results from your projects
+                    and previous experience.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="suggestion">
+
+            <div class="suggestion-number">
+                3
+            </div>
+
+            <div>
+
+                <strong>Optimize keywords</strong>
+
+                <p>
+                    Add skills and keywords that are relevant
+                    to the job description you are applying for.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="suggestion">
+
+            <div class="suggestion-number">
+                4
+            </div>
+
+            <div>
+
+                <strong>Add certifications</strong>
+
+                <p>
+                    Relevant certifications can strengthen
+                    your profile and improve your resume score.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ================= BUTTONS ================= -->
+
+    <div class="button-section">
+
+        <a href="home.html" class="analyze-again">
+            Analyze Another Resume
+        </a>
+
+        <button
+            class="print-btn"
+            onclick="window.print()">
+
+            Print / Save Report
+
+        </button>
+
+    </div>
+
+
+</div>
+
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer>
+
+    © 2026 AI Resume Analyzer | All Rights Reserved
+
+</footer>
+
+
+
+<!-- ================= JAVASCRIPT ================= -->
+
+<script>
+
+    // Get the uploaded resume name from analyze.html
+
+    const resumeName =
+        localStorage.getItem("resumeName");
+
+    if (resumeName) {
+
+        document.getElementById("resumeFileName")
+            .textContent = resumeName;
+
+    }
+
+</script>
+
+
+</body>
+</html>

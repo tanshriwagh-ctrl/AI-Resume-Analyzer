@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI Resume Analyzer - Home</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f5f7fb;
+            color: #222;
+        }
+
+
+        /* ================= NAVBAR ================= */
+
+        nav {
+            height: 70px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 70px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #4f46e5;
+        }
+
+        .logo span {
+            color: #222;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #333;
+            font-size: 15px;
+        }
+
+        nav a:hover {
+            color: #4f46e5;
+        }
+
+        .logout-btn {
+            color: #dc2626 !important;
+            cursor: pointer;
+        }
+
+
+        /* ================= HERO ================= */
+
+        .hero {
+            min-height: 500px;
+            padding: 70px 9%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 50px;
+        }
+
+        .hero-text {
+            width: 55%;
+        }
+
+        .hero-text h1 {
+            font-size: 48px;
+            color: #1e1b4b;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .hero-text h1 span {
+            color: #4f46e5;
+        }
+
+        .hero-text p {
+            color: #666;
+            line-height: 1.7;
+            margin-bottom: 25px;
+        }
+
+
+        /* ================= UPLOAD ================= */
+
+        .upload-area {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+
+        .upload-btn {
+            background: #4f46e5;
+            color: white;
+            padding: 14px 25px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .upload-btn:hover {
+            background: #3730a3;
+        }
+
+        .file-info {
+            font-size: 13px;
+            color: #777;
+            margin-top: 12px;
+        }
+
+        #fileSection {
+            display: none;
+            margin-top: 20px;
+        }
+
+        #fileCount {
+            font-size: 18px;
+            font-weight: bold;
+            color: #1e1b4b;
+            margin-bottom: 12px;
+        }
+
+        #fileList {
+            max-height: 250px;
+            overflow-y: auto;
+            padding-left: 25px;
+            margin-bottom: 20px;
+        }
+
+        #fileList li {
+            padding: 5px 0;
+            color: #555;
+            font-size: 14px;
+        }
+
+        #analyzeBtn {
+            display: none;
+            background: #16a34a;
+            color: white;
+            border: none;
+            padding: 13px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        #analyzeBtn:hover {
+            background: #15803d;
+        }
+
+        #analyzeBtn:disabled {
+            background: #86efac;
+            cursor: not-allowed;
+        }
+
+        #statusMessage {
+            margin-top: 12px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .success {
+            color: #16a34a;
+        }
+
+        .error {
+            color: #dc2626;
+        }
+
+
+        /* ================= HERO CARD ================= */
+
+        .hero-card {
+            width: 350px;
+            background: white;
+            padding: 32px;
+            border-radius: 18px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+        .analysis-icon {
+            width: 75px;
+            height: 75px;
+            background: #eef2ff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 18px;
+            font-size: 36px;
+        }
+
+        .hero-card h2 {
+            color: #1e1b4b;
+            margin-bottom: 12px;
+        }
+
+        .hero-card p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .analysis-items {
+            text-align: left;
+            background: #f8fafc;
+            padding: 15px 18px;
+            border-radius: 10px;
+            margin-bottom: 18px;
+        }
+
+        .analysis-items div {
+            color: #555;
+            font-size: 14px;
+            padding: 6px 0;
+        }
+
+        .analysis-status {
+            display: inline-block;
+            background: #eef2ff;
+            color: #3730a3;
+            padding: 9px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+
+        /* ================= FEATURES ================= */
+
+        .section {
+            padding: 70px 9%;
+            text-align: center;
+        }
+
+        .section h2 {
+            font-size: 34px;
+            color: #1e1b4b;
+            margin-bottom: 10px;
+        }
+
+        .section-intro {
+            color: #666;
+            margin-bottom: 40px;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 30px 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            text-decoration: none;
+            color: #222;
+            transition: 0.2s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 42px;
+            margin-bottom: 15px;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 15px;
+        }
+
+        .feature-card p {
+            color: #666;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .click-text {
+            color: #3730a3;
+            font-weight: bold;
+        }
+
+
+
+        /* =====================================================
+           LOGOUT CONFIRMATION POPUP
+        ===================================================== */
+
+        .logout-overlay {
+            display: none;
+
+            position: fixed;
+            top: 0;
+            left: 0;
+
+            width: 100%;
+            height: 100%;
+
+            background: rgba(15, 23, 42, 0.55);
+
+            backdrop-filter: blur(3px);
+
+            align-items: center;
+            justify-content: center;
+
+            z-index: 9999;
+        }
+
+
+        .logout-modal {
+            width: 420px;
+            max-width: 90%;
+
+            background: white;
+
+            border-radius: 16px;
+
+            padding: 35px;
+
+            text-align: center;
+
+            box-shadow: 0 15px 45px rgba(0,0,0,0.20);
+
+            animation: popup 0.2s ease;
+        }
+
+
+        @keyframes popup {
+
+            from {
+                opacity: 0;
+                transform: scale(0.92);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+        }
+
+
+        .logout-icon {
+            width: 65px;
+            height: 65px;
+
+            margin: 0 auto 18px;
+
+            border-radius: 50%;
+
+            background: #fef2f2;
+
+            color: #dc2626;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 30px;
+        }
+
+
+        .logout-modal h2 {
+            color: #1e1b4b;
+
+            font-size: 24px;
+
+            margin-bottom: 10px;
+        }
+
+
+        .logout-modal p {
+            color: #666;
+
+            font-size: 15px;
+
+            line-height: 1.6;
+
+            margin-bottom: 28px;
+        }
+
+
+        .logout-actions {
+            display: flex;
+
+            gap: 12px;
+
+            justify-content: center;
+        }
+
+
+        .cancel-btn,
+        .confirm-logout-btn {
+
+            flex: 1;
+
+            padding: 12px 20px;
+
+            border-radius: 8px;
+
+            font-size: 15px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+
+        .cancel-btn {
+
+            background: white;
+
+            color: #333;
+
+            border: 1px solid #d1d5db;
+        }
+
+
+        .cancel-btn:hover {
+
+            background: #f3f4f6;
+        }
+
+
+        .confirm-logout-btn {
+
+            background: #dc2626;
+
+            color: white;
+
+            border: 1px solid #dc2626;
+        }
+
+
+        .confirm-logout-btn:hover {
+
+            background: #b91c1c;
+        }
+
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 900px) {
+
+            .hero {
+                flex-direction: column;
+                padding: 50px 20px;
+            }
+
+            .hero-text {
+                width: 100%;
+            }
+
+            .features,
+            .steps {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            nav {
+                padding: 0 20px;
+            }
+
+        }
+
+
+        @media (max-width: 600px) {
+
+            nav ul {
+                display: none;
+            }
+
+            .hero-text h1 {
+                font-size: 35px;
+            }
+
+            .features,
+            .steps {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-card {
+                width: 100%;
+            }
+
+            .logout-actions {
+                flex-direction: column;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ================= NAVBAR ================= -->
+
+<nav>
+
+    <div class="logo">
+        AI <span>Resume Analyzer</span>
+    </div>
+
+
+    <ul>
+
+        <li>
+            <a href="home.html">
+                Home
+            </a>
+        </li>
+
+
+        <li>
+            <a href="#features">
+                Features
+            </a>
+        </li>
+
+
+        <li>
+            <a href="#about">
+                About
+            </a>
+        </li>
+
+
+        <!-- LOGOUT -->
+
+        <li>
+            <a
+                href="#"
+                class="logout-btn"
+                onclick="openLogoutPopup(event)"
+            >
+                Logout
+            </a>
+        </li>
+
+    </ul>
+
+</nav>
+
+
+
+<!-- ================= HERO ================= -->
+
+<section class="hero">
+
+
+    <div class="hero-text">
+
+
+        <h1>
+            Analyze Resumes
+            <br>
+            <span>Smarter & Faster</span>
+        </h1>
+
+
+        <p>
+            AI Resume Analyzer helps recruiters analyze
+            multiple resumes, extract important candidate
+            information, compare skills and understand
+            candidate profiles quickly.
+        </p>
+
+
+
+        <div class="upload-area">
+
+
+            <!-- FILE INPUT -->
+
+            <input
+                type="file"
+                id="resumeInput"
+                accept=".pdf,.docx"
+                multiple
+                hidden
+            >
+
+
+            <a
+                href="job.html"
+                class="upload-btn"
+                style="text-decoration:none; display:inline-block;"
+            >
+                💼 Job Requirement
+            </a>
+
+
+
+            <!-- UPLOAD BUTTON -->
+
+            <button
+                type="button"
+                class="upload-btn"
+                onclick="document.getElementById('resumeInput').click()"
+            >
+                📁 Upload Resumes
+            </button>
+
+
+
+            <p class="file-info">
+
+                Supported formats: PDF, DOCX |
+                Select 1 to 100+ resumes
+
+            </p>
+
+
+
+            <!-- SELECTED FILES -->
+
+            <div id="fileSection">
+
+
+                <div id="fileCount">
+                    0 Resume(s) Selected
+                </div>
+
+
+                <ol id="fileList"></ol>
+
+
+
+                <button
+                    type="button"
+                    id="analyzeBtn"
+                    onclick="analyzeResumes()"
+                >
+                    🔍 Analyze Resumes
+                </button>
+
+
+                <p id="statusMessage"></p>
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- ================= ANALYSIS PREVIEW ================= -->
+
+    <div class="hero-card">
+
+
+        <div class="analysis-icon">
+            📄
+        </div>
+
+
+        <h2>
+            Resume Analysis
+        </h2>
+
+
+        <p>
+            Upload a resume to start the analysis and
+            view important candidate information.
+        </p>
+
+
+
+        <div class="analysis-items">
+
+            <div>
+                ✓ Skills & Qualifications
+            </div>
+
+            <div>
+                ✓ Education & Experience
+            </div>
+
+            <div>
+                ✓ Certifications
+            </div>
+
+            <div>
+                ✓ Job Matching & ATS Score
+            </div>
+
+        </div>
+
+
+
+        <div class="analysis-status">
+            Waiting for Resume
+        </div>
+
+
+    </div>
+
+
+</section>
+
+
+
+<!-- ================= FEATURES ================= -->
+
+<section class="section" id="features">
+
+
+    <h2>
+        Our Features
+    </h2>
+
+
+    <p class="section-intro">
+        Simple and smart tools for faster resume screening
+    </p>
+
+
+
+    <div class="features">
+
+
+        <!-- RESUME ANALYSIS -->
+
+        <a
+            href="analysis.html"
+            class="feature-card"
+        >
+
+            <div class="feature-icon">
+                📄
+            </div>
+
+
+            <h3>
+                Resume Analysis
+            </h3>
+
+
+            <p>
+                Analyze uploaded resumes and view
+                important candidate information.
+            </p>
+
+
+            <span class="click-text">
+                View Analysis →
+            </span>
+
+        </a>
+
+
+
+        <!-- SKILL EXTRACTION -->
+
+        <a
+            href="analysis.html"
+            class="feature-card"
+        >
+
+            <div class="feature-icon">
+                🔍
+            </div>
+
+
+            <h3>
+                Skill Extraction
+            </h3>
+
+
+            <p>
+                Identify important skills, education,
+                experience and certifications.
+            </p>
+
+
+            <span class="click-text">
+                View Skills →
+            </span>
+
+        </a>
+
+
+
+        <!-- JOB MATCHING -->
+
+        <a
+            href="analysis.html"
+            class="feature-card"
+        >
+
+            <div class="feature-icon">
+                🎯
+            </div>
+
+
+            <h3>
+                Job Matching
+            </h3>
+
+
+            <p>
+                Compare candidate skills and
+                qualifications with job requirements.
+            </p>
+
+
+            <span class="click-text">
+                View Match →
+            </span>
+
+        </a>
+
+
+
+        <!-- ATS SCORE -->
+
+        <a
+            href="ats-score.html"
+            class="feature-card"
+        >
+
+            <div class="feature-icon">
+                📊
+            </div>
+
+
+            <h3>
+                ATS Score
+            </h3>
+
+
+            <p>
+                View a score that shows how well
+                a resume matches job requirements.
+            </p>
+
+
+            <span class="click-text">
+                View ATS Score →
+            </span>
+
+        </a>
+
+
+    </div>
+
+</section>
+
+
+
+<!-- ================= ABOUT ================= -->
+
+<section class="section" id="about">
+
+
+    <div class="about-box">
+
+
+        <h2>
+            About AI Resume Analyzer
+        </h2>
+
+
+        <p class="section-intro">
+
+            AI Resume Analyzer is a smart resume screening
+            system designed to help recruiters analyze
+            multiple resumes efficiently. The system provides
+            useful information such as skills, education,
+            experience, certifications and ATS score.
+
+        </p>
+
+
+    </div>
+
+</section>
+
+
+
+
+<footer>
+
+    © 2026 AI Resume Analyzer | All Rights Reserved
+
+</footer>
+
+
+
+
+
+<div
+    id="logoutOverlay"
+    class="logout-overlay"
+>
+
+
+    <div class="logout-modal">
+
+
+        <div class="logout-icon">
+            ⇥
+        </div>
+
+
+        <h2>
+            Log out?
+        </h2>
+
+
+        <p>
+            Are you sure you want to log out of
+            your AI Resume Analyzer account?
+        </p>
+
+
+
+        <div class="logout-actions">
+
+
+            
+
+            <button
+                type="button"
+                class="cancel-btn"
+                onclick="closeLogoutPopup()"
+            >
+                Cancel
+            </button>
+
+
+
+           
+
+            <button
+                type="button"
+                class="confirm-logout-btn"
+                onclick="confirmLogout()"
+            >
+                Log Out
+            </button>
+
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<script>
+const BACKEND_URL = "http://127.0.0.1:5000";
+
+let selectedResumeFiles = [];
+
+function openLogoutPopup(event) {
+    event.preventDefault();
+    document.getElementById("logoutOverlay").style.display = "flex";
+}
+
+function closeLogoutPopup() {
+    document.getElementById("logoutOverlay").style.display = "none";
+}
+
+function confirmLogout() {
+    localStorage.removeItem("loggedIn");
+    localStorage.removeItem("userEmail");
+    localStorage.removeItem("username");
+    window.location.href = "login.html";
+}
+
+document.getElementById("logoutOverlay").addEventListener("click", function(event) {
+    if (event.target === this) closeLogoutPopup();
+});
+
+document.getElementById("resumeInput").addEventListener("change", function() {
+    const files = Array.from(this.files);
+    const validFiles = [];
+
+    for (const file of files) {
+        const extension = file.name.split(".").pop().toLowerCase();
+
+        if (!["pdf", "docx"].includes(extension)) {
+            alert(file.name + " is not supported. Only PDF and DOCX files are allowed.");
+            continue;
+        }
+
+        if (file.size > 5 * 1024 * 1024) {
+            alert(file.name + " is larger than 5 MB and was skipped.");
+            continue;
+        }
+
+        validFiles.push(file);
+    }
+
+    selectedResumeFiles = validFiles;
+
+    const section = document.getElementById("fileSection");
+    const list = document.getElementById("fileList");
+    const analyzeBtn = document.getElementById("analyzeBtn");
+    const status = document.getElementById("statusMessage");
+
+    if (validFiles.length === 0) {
+        section.style.display = "none";
+        this.value = "";
+        return;
+    }
+
+    section.style.display = "block";
+    document.getElementById("fileCount").innerText =
+        validFiles.length + " Resume(s) Selected";
+
+    list.innerHTML = "";
+
+    validFiles.forEach(file => {
+        const li = document.createElement("li");
+        li.textContent = file.name;
+        list.appendChild(li);
+    });
+
+    analyzeBtn.style.display = "inline-block";
+    analyzeBtn.disabled = false;
+    analyzeBtn.innerText = "🔍 Analyze Resumes";
+
+    status.innerText = "✅ " + validFiles.length + " resume(s) ready for upload.";
+    status.className = "success";
+});
+
+async function analyzeResumes() {
+    const userId = localStorage.getItem("user_id");
+    const jobId = localStorage.getItem("currentJobId");
+
+    const analyzeBtn = document.getElementById("analyzeBtn");
+    const status = document.getElementById("statusMessage");
+
+    if (!userId) {
+        alert("Your login session was not found. Please log in again.");
+        window.location.href = "login.html";
+        return;
+    }
+
+    if (!jobId) {
+        alert("Please save the job requirements before analyzing resumes.");
+        window.location.href = "job.html";
+        return;
+    }
+
+    if (selectedResumeFiles.length === 0) {
+        alert("Please select at least one resume first.");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("user_id", userId);
+
+    selectedResumeFiles.forEach(file => {
+        formData.append("resumes", file);
+    });
+
+    try {
+        analyzeBtn.disabled = true;
+        analyzeBtn.innerText = "⏳ Uploading Resumes...";
+        status.innerText = "Uploading resumes to the server. Please wait...";
+        status.className = "success";
+
+        const response = await fetch(`${BACKEND_URL}/upload-resumes`, {
+            method: "POST",
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || data.status !== "success") {
+            throw new Error(data.message || "Resume upload failed.");
+        }
+
+        if (!Array.isArray(data.resumes) || data.resumes.length === 0) {
+            throw new Error("The server did not return any resume IDs.");
+        }
+
+        const resumeIds = data.resumes.map(resume => resume.resume_id);
+
+        if (resumeIds.some(id => id === undefined || id === null)) {
+            throw new Error("A resume ID was missing from the server response.");
+        }
+
+        localStorage.setItem("selectedResumeIds", JSON.stringify(resumeIds));
+        localStorage.setItem(
+            "selectedResumeNames",
+            JSON.stringify(data.resumes.map(resume => resume.file_name))
+        );
+        localStorage.setItem("resumeCount", String(resumeIds.length));
+
+        status.innerText = "✅ Resumes uploaded successfully. Opening analysis...";
+        analyzeBtn.innerText = "✅ Upload Complete";
+
+        window.location.href = "analysis.html";
+    } catch (error) {
+        console.error("Resume upload error:", error);
+        status.innerText = "❌ " + error.message;
+        status.className = "error";
+        analyzeBtn.disabled = false;
+        analyzeBtn.innerText = "🔍 Analyze Resumes";
+        alert(error.message);
+    }
+}
+</script>
+
+
+
+</body>
+
+</html>

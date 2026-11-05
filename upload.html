@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Upload Resume - AI Resume Analyzer</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f5f7fb;
+            color: #222;
+        }
+
+        /* ================= NAVBAR ================= */
+
+        nav {
+            height: 70px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 70px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #4f46e5;
+        }
+
+        .logo span {
+            color: #222;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #333;
+            margin-left: 25px;
+            font-size: 15px;
+        }
+
+        nav a:hover {
+            color: #4f46e5;
+        }
+
+        /* ================= MAIN ================= */
+
+        .container {
+            min-height: 650px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 50px 20px;
+        }
+
+        .upload-box {
+            background: white;
+            width: 500px;
+            padding: 45px;
+            text-align: center;
+            border-radius: 18px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.10);
+        }
+
+        .icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #1e1b4b;
+            margin-bottom: 15px;
+        }
+
+        .description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        /* ================= BUTTON ================= */
+
+        .upload-btn {
+            display: inline-block;
+            background: #4f46e5;
+            color: white;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .upload-btn:hover {
+            background: #3730a3;
+        }
+
+        /* ================= FILE NAME ================= */
+
+        #fileName {
+            margin-top: 20px;
+            color: #555;
+            word-break: break-word;
+        }
+
+        /* ================= ANALYZE BUTTON ================= */
+
+        #analyzeBtn {
+            display: none;
+            margin: 20px auto 0;
+            background: #16a34a;
+        }
+
+        #analyzeBtn:hover {
+            background: #15803d;
+        }
+
+        #analyzeBtn:disabled {
+            background: #86efac;
+            cursor: not-allowed;
+        }
+
+        /* ================= STATUS ================= */
+
+        #status {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        /* ================= FORMAT ================= */
+
+        .format {
+            margin-top: 20px;
+            font-size: 13px;
+            color: #888;
+            line-height: 1.5;
+        }
+
+        /* ================= FOOTER ================= */
+
+        footer {
+            background: #1e1b4b;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 600px) {
+
+            nav {
+                padding: 0 20px;
+            }
+
+            nav a {
+                margin-left: 10px;
+            }
+
+            .upload-box {
+                width: 100%;
+                padding: 30px 20px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- ================= NAVBAR ================= -->
+
+    <nav>
+
+        <div class="logo">
+            AI <span>Resume Analyzer</span>
+        </div>
+
+        <div>
+
+            <a href="home.html">
+                Home
+            </a>
+
+            <a href="login.html">
+                Login
+            </a>
+
+        </div>
+
+    </nav>
+
+
+    <!-- ================= UPLOAD SECTION ================= -->
+
+    <div class="container">
+
+        <div class="upload-box">
+
+            <div class="icon">
+                📄
+            </div>
+
+            <h1>
+                Upload Your Resume
+            </h1>
+
+            <p class="description">
+
+                Upload a candidate's resume to analyze
+                skills, education, experience and certifications.
+
+            </p>
+
+
+            <!-- FILE INPUT -->
+
+            <input
+                type="file"
+                id="resume"
+                accept=".pdf,.docx"
+                hidden
+            >
+
+
+            <!-- CHOOSE FILE BUTTON -->
+
+            <button
+                class="upload-btn"
+                onclick="document.getElementById('resume').click()"
+            >
+
+                📁 Choose Resume
+
+            </button>
+
+
+            <!-- FILE NAME -->
+
+            <p id="fileName">
+                No resume selected
+            </p>
+
+
+            <!-- ANALYZE BUTTON -->
+
+            <button
+                class="upload-btn"
+                id="analyzeBtn"
+                onclick="analyzeResume()"
+            >
+
+                🔍 Analyze Resume
+
+            </button>
+
+
+            <!-- STATUS -->
+
+            <p id="status"></p>
+
+
+            <!-- FORMAT -->
+
+            <p class="format">
+
+                Supported formats: PDF, DOCX<br>
+                Maximum file size: 5 MB
+
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer>
+
+        © 2026 AI Resume Analyzer | All Rights Reserved
+
+    </footer>
+
+
+    <!-- ================= JAVASCRIPT ================= -->
+
+    <script>
+
+        /* =====================================================
+           FLASK BACKEND URL
+        ===================================================== */
+
+        const BACKEND_URL = "http://127.0.0.1:5000";
+
+
+        /* =====================================================
+           SELECTED FILE
+        ===================================================== */
+
+        let selectedFile = null;
+
+
+        /* =====================================================
+           FILE SELECTION
+        ===================================================== */
+
+        document
+            .getElementById("resume")
+            .addEventListener(
+                "change",
+                function () {
+
+                    if (!this.files.length) {
+                        return;
+                    }
+
+
+                    selectedFile = this.files[0];
+
+
+                    /* ================= FILE TYPE CHECK ================= */
+
+                    const extension =
+                        selectedFile.name
+                            .split(".")
+                            .pop()
+                            .toLowerCase();
+
+
+                    if (
+                        extension !== "pdf" &&
+                        extension !== "docx"
+                    ) {
+
+                        alert(
+                            "Please select a PDF or DOCX resume."
+                        );
+
+
+                        this.value = "";
+
+                        selectedFile = null;
+
+
+                        document.getElementById(
+                            "fileName"
+                        ).innerHTML =
+                            "No resume selected";
+
+
+                        document.getElementById(
+                            "analyzeBtn"
+                        ).style.display =
+                            "none";
+
+
+                        return;
+                    }
+
+
+                    /* ================= FILE SIZE CHECK ================= */
+
+                    if (
+                        selectedFile.size >
+                        5 * 1024 * 1024
+                    ) {
+
+                        alert(
+                            "File size should not exceed 5 MB."
+                        );
+
+
+                        this.value = "";
+
+                        selectedFile = null;
+
+
+                        document.getElementById(
+                            "fileName"
+                        ).innerHTML =
+                            "No resume selected";
+
+
+                        document.getElementById(
+                            "analyzeBtn"
+                        ).style.display =
+                            "none";
+
+
+                        return;
+                    }
+
+
+                    /* ================= DISPLAY FILE NAME ================= */
+
+                    document.getElementById(
+                        "fileName"
+                    ).innerHTML =
+
+                        "Selected Resume: <b>" +
+                        escapeHtml(selectedFile.name) +
+                        "</b>";
+
+
+                    /* ================= SHOW ANALYZE BUTTON ================= */
+
+                    document.getElementById(
+                        "analyzeBtn"
+                    ).style.display =
+                        "block";
+
+
+                    document.getElementById(
+                        "status"
+                    ).innerHTML = "";
+
+                }
+            );
+
+
+        /* =====================================================
+           UPLOAD RESUME TO FLASK
+        ===================================================== */
+
+        async function analyzeResume() {
+
+
+            /* ================= CHECK FILE ================= */
+
+            if (!selectedFile) {
+
+                alert(
+                    "Please select a resume first."
+                );
+
+                return;
+            }
+
+
+            /* ================= GET USER ID ================= */
+
+            const userId =
+                localStorage.getItem("user_id");
+
+
+            /*
+               User must be logged in because
+               Flask needs user_id to save the resume.
+            */
+
+            if (!userId) {
+
+                alert(
+                    "Please login first."
+                );
+
+
+                window.location.href =
+                    "login.html";
+
+
+                return;
+            }
+
+
+            /* ================= GET ELEMENTS ================= */
+
+            const analyzeButton =
+                document.getElementById(
+                    "analyzeBtn"
+                );
+
+
+            const status =
+                document.getElementById(
+                    "status"
+                );
+
+
+            try {
+
+
+                /* ================= DISABLE BUTTON ================= */
+
+                analyzeButton.disabled = true;
+
+
+                analyzeButton.innerHTML =
+                    "⏳ Uploading Resume...";
+
+
+                status.innerHTML =
+                    "Uploading your resume to the server...";
+
+
+                /* =================================================
+                   CREATE FORM DATA
+                ================================================= */
+
+                const formData =
+                    new FormData();
+
+
+                /*
+                   Add logged-in user ID
+                */
+
+                formData.append(
+                    "user_id",
+                    userId
+                );
+
+
+                /*
+                   Add actual resume file
+                */
+
+                formData.append(
+                    "resumes",
+                    selectedFile
+                );
+
+
+                /* =================================================
+                   SEND FILE TO FLASK
+                ================================================= */
+
+                const response =
+                    await fetch(
+                        `${BACKEND_URL}/upload-resumes`,
+                        {
+                            method: "POST",
+                            body: formData
+                        }
+                    );
+
+
+                /* ================= GET SERVER RESPONSE ================= */
+
+                const data =
+                    await response.json();
+
+
+                /* =================================================
+                   CHECK RESPONSE
+                ================================================= */
+
+                if (
+                    !response.ok ||
+                    data.status !== "success"
+                ) {
+
+                    throw new Error(
+                        data.message ||
+                        "Resume upload failed."
+                    );
+
+                }
+
+
+                /* =================================================
+                   CHECK RESUME DATA
+                ================================================= */
+
+                if (
+                    !data.resumes ||
+                    data.resumes.length === 0
+                ) {
+
+                    throw new Error(
+                        "Resume ID was not returned by server."
+                    );
+
+                }
+
+
+                /* =================================================
+                   GET RESUME IDS
+                ================================================= */
+
+                const resumeIds =
+                    data.resumes.map(
+                        function (resume) {
+
+                            return resume.resume_id;
+
+                        }
+                    );
+
+
+                /* =================================================
+                   SAVE RESUME IDS
+                   analysis.html will use these IDs
+                ================================================= */
+
+                localStorage.setItem(
+                    "selectedResumeIds",
+                    JSON.stringify(resumeIds)
+                );
+
+
+                /* =================================================
+                   SAVE RESUME NAME
+                ================================================= */
+
+                localStorage.setItem(
+                    "resumeName",
+                    selectedFile.name
+                );
+
+
+                /* =================================================
+                   MARK RESUME AS UPLOADED
+                ================================================= */
+
+                localStorage.setItem(
+                    "resumeUploaded",
+                    "true"
+                );
+
+
+                /* =================================================
+                   SUCCESS MESSAGE
+                ================================================= */
+
+                status.innerHTML =
+                    "✅ Resume uploaded successfully. Opening analysis...";
+
+
+                analyzeButton.innerHTML =
+                    "✅ Upload Complete";
+
+
+                /* =================================================
+                   OPEN ANALYSIS PAGE
+                ================================================= */
+
+                setTimeout(
+                    function () {
+
+                        window.location.href =
+                            "analysis.html";
+
+                    },
+                    500
+                );
+
+            }
+
+
+            /* =====================================================
+               ERROR HANDLING
+            ===================================================== */
+
+            catch (error) {
+
+                console.error(
+                    "Resume upload error:",
+                    error
+                );
+
+
+                status.innerHTML =
+                    "❌ " + error.message;
+
+
+                alert(
+                    error.message
+                );
+
+
+                analyzeButton.disabled =
+                    false;
+
+
+                analyzeButton.innerHTML =
+                    "🔍 Analyze Resume";
+
+            }
+
+        }
+
+
+        /* =====================================================
+           ESCAPE HTML
+        ===================================================== */
+
+        function escapeHtml(value) {
+
+            return String(value)
+                .replaceAll("&", "&amp;")
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll('"', "&quot;")
+                .replaceAll("'", "&#039;");
+
+        }
+
+    </script>
+
+
+</body>
+
+</html>

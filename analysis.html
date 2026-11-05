@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Resume Analysis - AI Resume Analyzer</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f5f7fb;
+            color: #222;
+        }
+
+
+        /* ================= NAVBAR ================= */
+
+        nav {
+            height: 70px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 70px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #4f46e5;
+        }
+
+        .logo span {
+            color: #222;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #333;
+            margin-left: 25px;
+        }
+
+        nav a:hover {
+            color: #4f46e5;
+        }
+
+
+        /* ================= PAGE HEADER ================= */
+
+        .page-header {
+            text-align: center;
+            padding: 50px 20px 30px;
+        }
+
+        .page-header h1 {
+            color: #1e1b4b;
+            font-size: 38px;
+            margin-bottom: 12px;
+        }
+
+        .page-header p {
+            color: #666;
+            font-size: 16px;
+        }
+
+
+        /* ================= SUMMARY ================= */
+
+        .summary {
+            width: 90%;
+            max-width: 1100px;
+            margin: 0 auto 30px;
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            text-align: center;
+        }
+
+        .summary-box h2 {
+            color: #4f46e5;
+            font-size: 30px;
+            margin-bottom: 5px;
+        }
+
+        .summary-box p {
+            color: #666;
+            font-size: 14px;
+        }
+
+
+        /* ================= SCORE EXPLANATION ================= */
+
+        .explanation {
+            width: 90%;
+            max-width: 1100px;
+            margin: 0 auto 30px;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+
+        .explanation h2 {
+            color: #1e1b4b;
+            margin-bottom: 15px;
+        }
+
+        .explanation p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .weight-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .weight-table th,
+        .weight-table td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            text-align: left;
+        }
+
+        .weight-table th {
+            background: #f5f7fb;
+            color: #1e1b4b;
+        }
+
+
+        /* ================= RESULTS ================= */
+
+        .results-container {
+            width: 90%;
+            max-width: 1100px;
+            margin: 0 auto 50px;
+        }
+
+        .results-title {
+            color: #1e1b4b;
+            margin-bottom: 20px;
+        }
+
+
+        /* ================= RESUME CARD ================= */
+
+        .resume-card {
+            background: white;
+            margin-bottom: 20px;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+
+
+        /* ================= CARD TOP ================= */
+
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .rank {
+            width: 50px;
+            height: 50px;
+            background: #4f46e5;
+            color: white;
+            border-radius: 50%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-weight: bold;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .resume-info {
+            flex: 1;
+        }
+
+        .resume-info h3 {
+            color: #1e1b4b;
+            margin-bottom: 6px;
+            word-break: break-word;
+        }
+
+        .resume-info p {
+            color: #777;
+            font-size: 13px;
+        }
+
+
+        /* ================= ATS SCORE ================= */
+
+        .ats-score {
+            text-align: center;
+            min-width: 110px;
+        }
+
+        .score {
+            font-size: 32px;
+            font-weight: bold;
+            color: #16a34a;
+        }
+
+        .score-label {
+            font-size: 12px;
+            color: #777;
+        }
+
+
+        /* ================= PROGRESS ================= */
+
+        .progress-area {
+            margin-bottom: 25px;
+        }
+
+        .progress-bg {
+            width: 100%;
+            height: 10px;
+            background: #e5e7eb;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #4f46e5;
+            border-radius: 10px;
+        }
+
+
+        /* ================= BREAKDOWN ================= */
+
+        .breakdown-title {
+            color: #1e1b4b;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .breakdown {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+        }
+
+        .breakdown-item {
+            background: #f5f7fb;
+            padding: 15px 10px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .breakdown-item h4 {
+            color: #555;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .breakdown-item strong {
+            color: #4f46e5;
+            font-size: 18px;
+        }
+
+
+        /* ================= CALCULATION ================= */
+
+        .calculation {
+            margin-top: 20px;
+            background: #f8fafc;
+            padding: 18px;
+            border-left: 4px solid #4f46e5;
+            border-radius: 8px;
+        }
+
+        .calculation h4 {
+            color: #1e1b4b;
+            margin-bottom: 8px;
+        }
+
+        .calculation p {
+            color: #555;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+
+        /* ================= BADGES ================= */
+
+        .badge {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .excellent {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .good {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .average {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .low {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+
+        /* ================= NO RESUME ================= */
+
+        .no-resume {
+            background: white;
+            padding: 50px;
+            text-align: center;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+
+        .no-resume h2 {
+            color: #1e1b4b;
+            margin-bottom: 12px;
+        }
+
+        .no-resume p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .upload-link {
+            display: inline-block;
+            background: #4f46e5;
+            color: white;
+            padding: 12px 22px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+
+        /* ================= FOOTER ================= */
+
+        footer {
+            background: #1e1b4b;
+            color: white;
+            text-align: center;
+            padding: 25px;
+            margin-top: 40px;
+        }
+
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 850px) {
+
+            .breakdown {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .summary {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            nav {
+                padding: 0 20px;
+            }
+
+        }
+
+
+        @media (max-width: 600px) {
+
+            .card-top {
+                flex-wrap: wrap;
+            }
+
+            .ats-score {
+                width: 100%;
+                text-align: left;
+            }
+
+            .breakdown {
+                grid-template-columns: 1fr;
+            }
+
+            .page-header h1 {
+                font-size: 30px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ================= NAVBAR ================= -->
+
+<nav>
+
+    <div class="logo">
+        AI <span>Resume Analyzer</span>
+    </div>
+
+    <div>
+
+        <a href="home.html">
+            Home
+        </a>
+
+        <a href="logout.html">
+            Logout
+        </a>
+
+    </div>
+
+</nav>
+
+
+<!-- ================= HEADER ================= -->
+
+<section class="page-header">
+
+    <h1>
+        📊 Resume Analysis Results
+    </h1>
+
+    <p>
+        Resumes are ranked from highest ATS score to lowest ATS score.
+    </p>
+
+</section>
+
+
+<!-- ================= SUMMARY ================= -->
+
+<div class="summary">
+
+    <div class="summary-box">
+
+        <h2 id="totalResumes">
+            0
+        </h2>
+
+        <p>
+            Resumes Analyzed
+        </p>
+
+    </div>
+
+
+    <div class="summary-box">
+
+        <h2 id="highestScore">
+            0%
+        </h2>
+
+        <p>
+            Highest ATS Score
+        </p>
+
+    </div>
+
+
+    <div class="summary-box">
+
+        <h2 id="topRank">
+            #1
+        </h2>
+
+        <p>
+            Top Ranked Resume
+        </p>
+
+    </div>
+
+</div>
+
+
+<!-- ================= SCORE EXPLANATION ================= -->
+
+<div class="explanation">
+
+    <h2>
+        📋 How ATS Score Is Calculated
+    </h2>
+
+    <p>
+        Each resume receives a score out of 100 based on
+        five categories. The categories have fixed weights,
+        so every resume is evaluated using the same scoring model.
+    </p>
+
+
+    <table class="weight-table">
+
+        <thead>
+
+            <tr>
+
+                <th>
+                    Category
+                </th>
+
+                <th>
+                    Maximum Score
+                </th>
+
+                <th>
+                    Weight
+                </th>
+
+            </tr>
+
+        </thead>
+
+
+        <tbody>
+
+            <tr>
+
+                <td>
+                    Skills Match
+                </td>
+
+                <td>
+                    40
+                </td>
+
+                <td>
+                    40%
+                </td>
+
+            </tr>
+
+
+            <tr>
+
+                <td>
+                    Experience
+                </td>
+
+                <td>
+                    20
+                </td>
+
+                <td>
+                    20%
+                </td>
+
+            </tr>
+
+
+            <tr>
+
+                <td>
+                    Education
+                </td>
+
+                <td>
+                    15
+                </td>
+
+                <td>
+                    15%
+                </td>
+
+            </tr>
+
+
+            <tr>
+
+                <td>
+                    Certifications
+                </td>
+
+                <td>
+                    10
+                </td>
+
+                <td>
+                    10%
+                </td>
+
+            </tr>
+
+
+            <tr>
+
+                <td>
+                    Keywords & Resume Format
+                </td>
+
+                <td>
+                    15
+                </td>
+
+                <td>
+                    15%
+                </td>
+
+            </tr>
+
+
+            <tr>
+
+                <th>
+                    TOTAL
+                </th>
+
+                <th>
+                    100
+                </th>
+
+                <th>
+                    100%
+                </th>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+</div>
+
+
+<!-- ================= RESULTS ================= -->
+
+<div class="results-container">
+
+    <h2 class="results-title">
+        🏆 Ranked Resumes
+    </h2>
+
+
+    <div id="results">
+
+        <!-- Results generated by JavaScript -->
+
+    </div>
+
+</div>
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer>
+
+    © 2026 AI Resume Analyzer | All Rights Reserved
+
+</footer>
+
+
+<!-- ================= JAVASCRIPT ================= -->
+
+<script>
+
+const BACKEND_URL = "http://127.0.0.1:5000";
+
+/* =========================================================
+   GET SAVED RESUME IDS
+   ========================================================= */
+function getResumeIds() {
+    try {
+        const saved = JSON.parse(localStorage.getItem("selectedResumeIds") || "[]");
+        return Array.isArray(saved) ? saved.map(Number).filter(Boolean) : [];
+    } catch (error) {
+        console.error("Resume ID error:", error);
+        return [];
+    }
+}
+
+
+/* =========================================================
+   GET CURRENT JOB ID
+   ========================================================= */
+async function getJobId() {
+    const value = localStorage.getItem("currentJobId");
+    const savedId = value ? Number(value) : 0;
+
+    if (savedId) {
+        return savedId;
+    }
+
+    // Older job.html versions may not have saved currentJobId.
+    // In that case use the latest job saved for this user.
+    const userId = getUserId();
+
+    if (!userId) {
+        return 0;
+    }
+
+    try {
+        const response = await fetch(
+            BACKEND_URL + "/jobs/" + userId
+        );
+
+        const data = await response.json();
+
+        if (response.ok && data.jobs && data.jobs.length > 0) {
+            const latestJobId = Number(data.jobs[0].job_id);
+            localStorage.setItem("currentJobId", latestJobId.toString());
+            return latestJobId;
+        }
+    } catch (error) {
+        console.error("Job fetch error:", error);
+    }
+
+    return 0;
+}
+
+
+/* =========================================================
+   GET USER ID
+   ========================================================= */
+function getUserId() {
+    const value = localStorage.getItem("user_id");
+    return value ? Number(value) : 0;
+}
+
+
+/* =========================================================
+   SHOW NO RESUME MESSAGE
+   ========================================================= */
+function showNoResume(messageText) {
+    const results = document.getElementById("results");
+
+    results.innerHTML = `
+        <div class="no-resume">
+            <h2>📄 No Resume Data Available</h2>
+            <p>${escapeHTML(messageText)}</p>
+            <a href="home.html" class="upload-link">← Upload Resumes</a>
+        </div>
+    `;
+
+    document.getElementById("totalResumes").innerText = "0";
+    document.getElementById("highestScore").innerText = "0%";
+    document.getElementById("topRank").innerText = "#-";
+}
+
+
+/* =========================================================
+   GET SCORE CATEGORY
+   ========================================================= */
+function getScoreCategory(score) {
+    if (score >= 80) {
+        return {
+            text: "Excellent Match",
+            className: "excellent"
+        };
+    }
+
+    if (score >= 65) {
+        return {
+            text: "Good Match",
+            className: "good"
+        };
+    }
+
+    if (score >= 50) {
+        return {
+            text: "Average Match",
+            className: "average"
+        };
+    }
+
+    return {
+        text: "Low Match",
+        className: "low"
+    };
+}
+
+
+/* =========================================================
+   ANALYZE ALL RESUMES USING BACKEND
+   ========================================================= */
+async function analyzeAllResumes() {
+
+    const userId = getUserId();
+    const jobId = await getJobId();
+    let resumeIds = getResumeIds();
+    const results = document.getElementById("results");
+
+    if (!userId) {
+        showNoResume("Please login first.");
+        return;
+    }
+
+    if (!jobId) {
+        showNoResume("Please create and save Job Requirements first.");
+        return;
+    }
+
+    /*
+       If resume IDs are not available in localStorage,
+       get the user's uploaded resumes from the backend.
+    */
+    if (resumeIds.length === 0) {
+        try {
+            const resumeResponse = await fetch(
+                BACKEND_URL + "/resumes/" + userId
+            );
+
+            const resumeData = await resumeResponse.json();
+
+            if (resumeResponse.ok && resumeData.resumes) {
+                resumeIds = resumeData.resumes.map(function(resume) {
+                    return Number(resume.resume_id);
+                });
+            }
+        } catch (error) {
+            console.error("Resume fetch error:", error);
+        }
+    }
+
+    if (resumeIds.length === 0) {
+        showNoResume("Please upload at least one resume before opening the analysis page.");
+        return;
+    }
+
+    results.innerHTML = `
+        <div class="no-resume">
+            <h2>⏳ Analyzing Resumes...</h2>
+            <p>Reading resume content and comparing it with the selected job requirements.</p>
+        </div>
+    `;
+
+    try {
+        const response = await fetch(BACKEND_URL + "/analyze-resumes", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                user_id: userId,
+                job_id: jobId,
+                resume_ids: resumeIds
+            })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || "Resume analysis failed.");
+        }
+
+        if (!data.results || data.results.length === 0) {
+            showNoResume("No resume results were returned by the backend.");
+            return;
+        }
+
+        renderResults(data.results);
+
+    } catch (error) {
+        console.error("Analysis error:", error);
+
+        results.innerHTML = `
+            <div class="no-resume">
+                <h2>❌ Analysis Failed</h2>
+                <p>${escapeHTML(error.message)}</p>
+                <p>Please make sure the Flask backend is running.</p>
+                <a href="home.html" class="upload-link">← Back to Home</a>
+            </div>
+        `;
+    }
+}
+
+
+/* =========================================================
+   RENDER REAL RESULTS
+   ========================================================= */
+function renderResults(resumes) {
+
+    const results = document.getElementById("results");
+
+    resumes.sort(function(a, b) {
+        return Number(b.ats_score) - Number(a.ats_score);
+    });
+
+    document.getElementById("totalResumes").innerText = resumes.length;
+    document.getElementById("highestScore").innerText = resumes[0].ats_score + "%";
+    document.getElementById("topRank").innerText = "#1";
+
+    results.innerHTML = "";
+
+    resumes.forEach(function(resume, index) {
+
+        const rank = index + 1;
+        const total = Number(resume.ats_score) || 0;
+        const category = getScoreCategory(total);
+
+        const card = document.createElement("div");
+        card.className = "resume-card";
+
+        card.innerHTML = `
+            <div class="card-top">
+
+                <div class="rank">
+                    #${rank}
+                </div>
+
+                <div class="resume-info">
+                    <h3>
+                        📄 ${escapeHTML(resume.file_name || "Resume")}
+                    </h3>
+
+                    <p>
+                        Resume Rank #${rank}
+                    </p>
+
+                    <span class="badge ${category.className}">
+                        ${category.text}
+                    </span>
+                </div>
+
+                <div class="ats-score">
+                    <div class="score">
+                        ${total}%
+                    </div>
+
+                    <div class="score-label">
+                        ATS Score
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="progress-area">
+                <div class="progress-bg">
+                    <div
+                        class="progress-fill"
+                        style="width:${total}%"
+                    ></div>
+                </div>
+            </div>
+
+            <h3 class="breakdown-title">
+                📊 Score Breakdown
+            </h3>
+
+            <div class="breakdown">
+
+                <div class="breakdown-item">
+                    <h4>Skills Match</h4>
+                    <strong>${resume.skills}/40</strong>
+                </div>
+
+                <div class="breakdown-item">
+                    <h4>Experience</h4>
+                    <strong>${resume.experience}/20</strong>
+                </div>
+
+                <div class="breakdown-item">
+                    <h4>Education</h4>
+                    <strong>${resume.education}/15</strong>
+                </div>
+
+                <div class="breakdown-item">
+                    <h4>Certifications</h4>
+                    <strong>${resume.certifications}/10</strong>
+                </div>
+
+                <div class="breakdown-item">
+                    <h4>Keywords & Format</h4>
+                    <strong>${resume.keywords}/15</strong>
+                </div>
+
+            </div>
+
+            <div class="calculation">
+                <h4>🧮 Score Calculation</h4>
+
+                <p>
+                    Skills Match: ${resume.skills}/40
+                    + Experience: ${resume.experience}/20
+                    + Education: ${resume.education}/15
+                    + Certifications: ${resume.certifications}/10
+                    + Keywords & Format: ${resume.keywords}/15
+                    = <strong>${total}/100</strong>
+                    = <strong>${total}%</strong>
+                </p>
+            </div>
+        `;
+
+        results.appendChild(card);
+    });
+}
+
+
+/* =========================================================
+   ESCAPE HTML
+   ========================================================= */
+function escapeHTML(text) {
+    const div = document.createElement("div");
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+
+/* =========================================================
+   START ANALYSIS
+   ========================================================= */
+window.addEventListener("DOMContentLoaded", function() {
+    analyzeAllResumes();
+});
+
+</script>
+
+
+</body>
+
+</html>
